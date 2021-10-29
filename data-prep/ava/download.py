@@ -19,7 +19,7 @@ ANNOTATION_FILE_URL = "https://s3.amazonaws.com/ava-dataset/annotations/ava_v2.2
 STORAGE_DIR = "/ssd/pbagad/datasets/AVA/"
 
 
-def download_file(url, save_path, desc="Downloading sample file", overwrite=False, block_size=1024):
+def download_file(url, save_path, desc="Downloading sample file", overwrite=False, block_size=102400):
     """
     Downloads file at given URL with a progress bar.
 
