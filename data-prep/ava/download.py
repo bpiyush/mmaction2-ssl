@@ -1,11 +1,18 @@
-"""Setup script for AVA dataset"""
+"""
+Setup script for AVA dataset
+
+Example:
+>>> python download.py -o /ssd/pbagad/datasets/AVA/
+"""
+
 import time
 from os import makedirs
-from os.path import join, exists, basename
+from os.path import join, exists, basename, isdir
 from tqdm import tqdm
 import requests
 import wget
-import zipfile
+
+from mmaction.utils.io import read_txt, unzip_file
 
 
 TRAIN_FILE_LIST_URL = "https://s3.amazonaws.com/ava-dataset/annotations/ava_file_names_trainval_v2.1.txt"
@@ -46,38 +53,42 @@ def download_file(url, save_path, desc="Downloading sample file", overwrite=Fals
         print(f"WARNING: File already exists at {save_path} and overwrite=False.")
 
 
-def read_txt(filepath):
-    """Reads txt file."""
-    with open(filepath, "rb") as file:
-        lines = file.readlines()
-        lines = [line.rstrip().decode("utf-8") for line in lines]
-    return lines
-
-
-def unzip_file(file, dir):
-    with zipfile.ZipFile(file, 'r') as zip_ref:
-        zip_ref.extractall(dir)
-
-
 if __name__ == "__main__":
+    import argparse
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "-o", "--output_dir",
+        help="Parent dataset folder",
+        required=True,
+    )
+    parser.add_argument(
+        "-f", "--force_overwrite",
+        help="Overwrite existing dataset files by downloading",
+        action="store_true",
+    )
+    args = parser.parse_args()
 
     start = time.time()
 
+    assert isdir(args.output_dir), \
+        f"Given dataset output folder does not exist at {args.output_dir}"
+
     # step 0: create dataset folders
-    raw_dir = join(STORAGE_DIR, "raw")
+    raw_dir = join(args.output_dir, "raw")
     makedirs(raw_dir, exist_ok=True)
     videos_dir = join(raw_dir, "videos")
     makedirs(videos_dir, exist_ok=True)
 
-    annot_dir = join(STORAGE_DIR, "annotations")
+    annot_dir = join(args.output_dir, "annotations")
     makedirs(annot_dir, exist_ok=True)
 
-    meta_dir = join(STORAGE_DIR, "meta")
+    meta_dir = join(args.output_dir, "meta")
     makedirs(meta_dir, exist_ok=True)
 
     # step 1: download train and test file lists
     train_list_path = join(meta_dir, basename(TRAIN_FILE_LIST_URL))
-    if not exists(train_list_path):
+    if not exists(train_list_path) or args.force_overwrite:
         print("Downloading train files list: ")
         train_list_path = wget.download(url=TRAIN_FILE_LIST_URL, out=meta_dir)
         print("\n")
@@ -85,7 +96,7 @@ if __name__ == "__main__":
         print(f"Train file already exists at {train_list_path}")
 
     test_list_path = join(meta_dir, basename(TEST_FILE_LIST_URL))
-    if not exists(test_list_path):
+    if not exists(test_list_path) or args.force_overwrite:
         print("Downloading test files list: ")
         test_list_path = wget.download(url=TEST_FILE_LIST_URL, out=meta_dir)
         print("\n")
@@ -94,7 +105,7 @@ if __name__ == "__main__":
 
     # step 2: download annotation files
     annot_file = join(annot_dir, basename(ANNOTATION_FILE_URL))
-    if not exists(annot_file):
+    if not exists(annot_file) or args.force_overwrite:
         download_file(ANNOTATION_FILE_URL, annot_file, desc=f"Downloading annotation files")
         unzip_file(annot_file, annot_dir)
     else:
@@ -107,7 +118,11 @@ if __name__ == "__main__":
     for i, f in enumerate(train_files):
         url = TRAIN_FILE_TEMPLATE.format(f)
         save_path = join(videos_dir, f)
-        download_file(url, save_path, desc=f"Downloading file [{i + 1}/{len(train_files)}]")
+        download_file(
+            url, save_path,
+            desc=f"Downloading file [{i + 1}/{len(train_files)}]",
+            overwrite=args.force_overwrite,
+        )
         if debug:
             break
 
@@ -116,7 +131,11 @@ if __name__ == "__main__":
     for i, f in enumerate(test_files):
         url = TRAIN_FILE_TEMPLATE.format(f)
         save_path = join(videos_dir, f)
-        download_file(url, save_path, desc=f"Downloading file [{i + 1}/{len(test_files)}]")
+        download_file(
+            url, save_path,
+            desc=f"Downloading file [{i + 1}/{len(test_files)}]",
+            overwrite=args.force_overwrite,
+        )
         if debug:
             break
     
