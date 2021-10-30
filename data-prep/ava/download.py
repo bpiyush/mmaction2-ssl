@@ -2,7 +2,7 @@
 Setup script for AVA dataset
 
 Example:
->>> python download.py -o /ssd/pbagad/datasets/AVA/
+(conda-env) $ python download.py -o /ssd/pbagad/datasets/AVA/
 """
 
 import time

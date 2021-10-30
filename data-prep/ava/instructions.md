@@ -14,3 +14,10 @@ pip install git+https://github.com/open-mmlab/mim.git
 mim install mmaction2
 pip install ipdb ipython tqdm wget
 ```
+
+### Download dataset
+If you want to download the dataset in a folder `/path/to/folder/`, then use the following command.
+
+```bash
+python download.py -o /path/to/folder/
+```
