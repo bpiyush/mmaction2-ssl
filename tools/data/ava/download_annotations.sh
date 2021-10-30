@@ -3,7 +3,8 @@
 set -e
 
 VERSION=${VERSION:-"2.1"}
-DATA_DIR="../../../data/ava/annotations"
+DATA_DIR=${DATA_DIR:-"../../../data/ava/annotations"}
+echo ":::: Downloading AVA annotations ($VERSION) to $DATA_DIR"
 
 if [[ ! -d "${DATA_DIR}" ]]; then
   echo "${DATA_DIR} does not exist. Creating";
