@@ -13,6 +13,8 @@ conda install pytorch==1.6.0 torchvision==0.7.0 -c pytorch -y
 pip install git+https://github.com/open-mmlab/mim.git
 mim install mmaction2
 pip install ipdb ipython tqdm wget
+conda install av -c conda-forge -y
+pip install PyTurboJPEG
 ```
 
 ### Download dataset
