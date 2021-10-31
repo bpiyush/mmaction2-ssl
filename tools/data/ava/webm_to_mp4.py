@@ -27,7 +27,7 @@ if __name__ == "__main__":
         source = join(args.output_dir, "videos", d)
         print(f"::::::::::::: Converting {source} to mp4")
         call(
-            f"ffmpeg -fflags +genpts -i {source} -r 30 {source.replace('webm', 'mp4')}",
+            f"ffmpeg -fflags +genpts -i {source} {source.replace('webm', 'mp4')}",
             shell=True,
         )
         os.remove(source)
