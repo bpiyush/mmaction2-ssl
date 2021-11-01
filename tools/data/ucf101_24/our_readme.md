@@ -48,3 +48,5 @@ mmaction2
 │   |   ├── UCF101v2-GT.pkl
 │   |   ├── pyannot.pkl
 ```
+
+3. Create train/validation splits: Run the notebook `./create_trainval_splits.ipynb`
