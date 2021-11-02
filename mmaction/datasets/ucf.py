@@ -313,7 +313,7 @@ if __name__ == "__main__":
     ann_file = osp.join(data_root, "pyannot.pkl")
     split_file = osp.join(data_root, "valid_seed_0.txt")
 
-    dataset = UCFDataset(ann_file, split_file, pipeline)
+    dataset = UCFDataset(ann_file, split_file, pipeline, data_prefix=data_prefix)
     X = dataset[0]
 
     import ipdb; ipdb.set_trace()
